@@ -1,0 +1,6 @@
+use_frameworks!
+target 'LYMainThreadGuard_Tests' do
+  pod 'LYMainThreadGuard', :path => '../'
+  
+  
+end
