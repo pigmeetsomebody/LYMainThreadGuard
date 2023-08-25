@@ -1,0 +1,22 @@
+{
+  "name": "LYMainThreadGuard",
+  "version": "0.1.0",
+  "summary": "A short description of LYMainThreadGuard.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/zhuyanyu/LYMainThreadGuard",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "zhuyanyu": "zhuyanyu@fintopia.tech"
+  },
+  "source": {
+    "git": "https://github.com/zhuyanyu/LYMainThreadGuard.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "LYMainThreadGuard/Classes/**/*"
+}
