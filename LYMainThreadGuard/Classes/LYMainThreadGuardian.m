@@ -74,7 +74,6 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
     
     LYPushVCImpBlock navPushSwizzledImpBlock = ^(id slf, UIViewController *viewController, BOOL animated) {
       if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
         [[LYMainThreadGuardian sharedInstance].delegate pushViewControllerOnNoneMainThread:viewController];
       }
       ((void(*)(id, SEL, UIViewController*, BOOL))objc_msgSend)(
@@ -91,7 +90,6 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
           slf, navPopSwizzledSelector, animated
       );
       if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
         [[LYMainThreadGuardian sharedInstance].delegate popUpViewControllerOnNoneMainThread:returnValue];
       }
       return returnValue;
