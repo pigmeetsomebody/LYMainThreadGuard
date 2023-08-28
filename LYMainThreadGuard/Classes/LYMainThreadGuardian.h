@@ -1,6 +1,5 @@
 //
 //  LYMainThreadGuardian.h
-//  AAILiveness
 //
 //  Created by yanyuzhu on 2023/8/25.
 //
@@ -10,9 +9,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol LYMainThreadGuardianReportDelegate <NSObject>
-- (void)didDetectNonMainThreadCall;
+- (void)didDetectRefreshUIOnNonMainThreadCall;
 - (void)pushViewControllerOnNoneMainThread:(UIViewController *)viewController;
-
+- (void)popUpViewControllerOnNoneMainThread:(UIViewController *)viewController;
 @end
 
 @interface LYMainThreadGuardian : NSObject

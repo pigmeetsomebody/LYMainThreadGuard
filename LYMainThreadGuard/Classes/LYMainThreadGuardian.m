@@ -1,6 +1,5 @@
 //
 //  LYMainThreadGuardian.m
-//  AAILiveness
 //
 //  Created by yanyuzhu on 2023/8/25.
 //
@@ -60,7 +59,7 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
       SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
       LYMainThreadGuardianVoidBlock voidBlock = ^(id slf){
         if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-          [[LYMainThreadGuardian sharedInstance].delegate didDetectNonMainThreadCall];
+          [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
         }
         ((void(*)(id, SEL))objc_msgSend)(
             slf, swizzledSelector
@@ -75,7 +74,7 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
     
     LYPushVCImpBlock navPushSwizzledImpBlock = ^(id slf, UIViewController *viewController, BOOL animated) {
       if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectNonMainThreadCall];
+        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
         [[LYMainThreadGuardian sharedInstance].delegate pushViewControllerOnNoneMainThread:viewController];
       }
       ((void(*)(id, SEL, UIViewController*, BOOL))objc_msgSend)(
@@ -88,12 +87,13 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
     SEL navPopSwizzledSelector = [self swizzledSelectorForSelector:navPopSelector];
     typedef UIViewController * (^LYPopVCImpBlock)(id slf, BOOL animated);
     LYPopVCImpBlock popImplBlock = ^UIViewController *(id slf, BOOL animated){
-      if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectNonMainThreadCall];
-      }
       UIViewController *returnValue = ((id(*)(id, SEL, BOOL))objc_msgSend)(
           slf, navPopSwizzledSelector, animated
       );
+      if ([self isEnabled] && ![NSThread currentThread].isMainThread){
+        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
+        [[LYMainThreadGuardian sharedInstance].delegate popUpViewControllerOnNoneMainThread:returnValue];
+      }
       return returnValue;
     };
     [self replaceImplementationOfKnownSelector:navPopSelector onClass:[UINavigationController class] withBlock:popImplBlock swizzledSelector:navPopSwizzledSelector];
@@ -102,7 +102,7 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
     SEL swizzle_tbReloadDataSelector = [self swizzledSelectorForSelector:tbReloadDataSelector];
     LYMainThreadGuardianVoidBlock tbReloadImpBlock = ^(id slf){
       if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectNonMainThreadCall];
+        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
       }
       ((void(*)(id, SEL))objc_msgSend)(
           slf, swizzle_tbReloadDataSelector
@@ -114,7 +114,7 @@ NSString * const kLYMainThreadGuardianEnabledKey = @"kLYMainThreadGuardianEnable
     SEL swizzle_collectionReloadDataSelector = [self swizzledSelectorForSelector:collectionReloadDataSelector];
     LYMainThreadGuardianVoidBlock collectionReloadImpBlock = ^(id slf){
       if ([self isEnabled] && ![NSThread currentThread].isMainThread){
-        [[LYMainThreadGuardian sharedInstance].delegate didDetectNonMainThreadCall];
+        [[LYMainThreadGuardian sharedInstance].delegate didDetectRefreshUIOnNonMainThreadCall];
       }
       ((void(*)(id, SEL))objc_msgSend)(
           slf, swizzle_collectionReloadDataSelector
